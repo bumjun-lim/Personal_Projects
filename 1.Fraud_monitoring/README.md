@@ -10,6 +10,10 @@
   * 단순 정확도(Accuracy)가 아닌 비즈니스 손실과 직결되는 **F1-Score / Recall** 최적화
   * 이상 거래 패턴 및 금액대별 시각화 모니터링 구축
 
+## 🔗 상세 프로젝트 기록 (Notion)
+
+👉 **[노션 포트폴리오 바로가기](https://app.notion.com/p/SQL-239c6bb576d3802fab81ecd7cb5cb766?source=copy_link)**
+
 ## 🛠️ 사용 기술 및 도구 (Tech Stack)
 
 * **Language:** Python
