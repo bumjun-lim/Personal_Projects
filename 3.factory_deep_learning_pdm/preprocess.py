@@ -30,7 +30,7 @@ def create_sequences(data, labels, window_size):
 
 # 외부에서 호출할 메인 전처리 함수
 def get_pdm_dataloader(
-    file_path="ai4i2020.csv", window_size=10, batch_size=32
+        file_path="ai4i2020.csv", window_size = 10, batch_size=32
 ):
     # 1. 데이터 로드
     ##db 로드 방식

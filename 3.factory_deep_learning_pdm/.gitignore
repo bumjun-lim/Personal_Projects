@@ -18,3 +18,7 @@ env/
 .streamlit/secret.toml
 .vscode/
 .idea/
+
+# PyTorch model weight files
+*.pth
+*.pt
