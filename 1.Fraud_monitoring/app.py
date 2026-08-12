@@ -172,7 +172,7 @@ if len(filtered_df_plot) > 0:
     # 컬럼 이름 및 순서 정돈 (1일차 SQL 결과창과 동일한 흐름)
     final_summary.columns = ['구간 전체 거래(건)', '실제 사기(건)', '구간 내 사기 비율(%)', '정탐/TP(건)', '미탐/FN(건)', '오탐/FP(건)']
     
-    st.dataframe(final_summary, use_container_width=True)
+    st.dataframe(final_summary, width='stretch')
 # 5-3. 필터링 조건별 실시간 모델 성과(F1-Score, Precision, Recall) 시각화
 st.markdown("---")
 st.subheader("🎯 선택 구간별 모델 성과 지표 (F1-Score / Precision / Recall)")

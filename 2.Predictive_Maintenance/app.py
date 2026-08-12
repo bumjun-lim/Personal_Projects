@@ -247,13 +247,13 @@ if not is_full_view:
     nav_col1, nav_col2, nav_space = st.columns([1, 1, 4])
 
     with nav_col1:
-        if st.button("◀ 이전 구간 이동", use_container_width=True):
+        if st.button("◀ 이전 구간 이동", width='stretch'):
             new_val = max(min_udi, st.session_state.current_start_udi - window_size)
             st.session_state.current_start_udi = new_val
             st.rerun()
 
     with nav_col2:
-        if st.button("다음 구간 이동 ▶", use_container_width=True):
+        if st.button("다음 구간 이동 ▶", width='stretch'):
             new_val = min(max_start_udi, st.session_state.current_start_udi + window_size)
             st.session_state.current_start_udi = new_val
             st.rerun()
@@ -299,7 +299,7 @@ with left_col:
     
     st.plotly_chart(
         fig, 
-        use_container_width=True, 
+        width='stretch', 
         config={'displayModeBar': False, 'scrollZoom': False, 'doubleClick': False}
     )
 
@@ -375,7 +375,7 @@ with tab2:
         labels={"Tool_wear": "Tool Wear (min)", "Torque": "Torque (Nm)", "Type": "Product Type"}
     )
     fig_scatter.update_layout(height=400, margin=dict(l=20, r=20, t=20, b=20), dragmode=False)
-    st.plotly_chart(fig_scatter, use_container_width=True, config={'displayModeBar': False, 'scrollZoom': False, 'doubleClick': False})
+    st.plotly_chart(fig_scatter, width='stretch', config={'displayModeBar': False, 'scrollZoom': False, 'doubleClick': False})
     
     st.markdown("---")
     
@@ -395,7 +395,7 @@ with tab2:
     display_table = torque_type_ct.round(1).astype(str) + " % (" + torque_type_count.astype(str) + "건)"
     display_table = display_table[['L', 'M', 'H']]
     
-    st.dataframe(display_table, use_container_width=True)
+    st.dataframe(display_table, width='stretch')
 
 with tab3:
     st.markdown("#### 🕵️ 모델 예측 위험(>임계치) vs 실제 정상(Machine_failure = 0) 데이터 조회")
@@ -413,7 +413,7 @@ with tab3:
                 'Failure_Prob_Pct': '{:.1f}%',
                 'Torque': '{:.1f}'
             }),
-            use_container_width=True,
+            width='stretch',
             height=250
         )
         st.warning("⚠️ **현장 검증 포인트:** 실제 고장(1)은 나지 않았지만 모델이 경고를 보낸 위 데이터들은 **순간적인 과부하(Torque 튐)나 마모 임계치 임박**으로 인해 설비 피로도가 극에 달했던 순간들입니다. 정비 엔지니어의 교차 점검이 권장됩니다.")
@@ -447,6 +447,6 @@ st.dataframe(
         'Failure_Prob_Pct': '{:.1f}%',
         'Torque[Nm]': '{:.1f}'
     }),
-    use_container_width=True,
+    width='stretch',
     height=300
 )

@@ -41,23 +41,31 @@ NUM_LAYERS = 1
 BATCH_SIZE = 32
 WINDOW_SIZE = 10
 LEARNING_RATE = 0.001
-EPOCHS = 20  # 테스트용
+EPOCHS = 50  # 테스트용
 
 print(">>> 데이터 로딩 및 모델 초기화 중...")
 # 2. 데이터 및 모델 로드
-train_loader = get_pdm_dataloader(file_path="ai4i2020.csv", window_size = WINDOW_SIZE, batch_size=BATCH_SIZE)
+train_loader, val_loader, test_loader = get_pdm_dataloader(
+    file_path="ai4i2020.csv", window_size = WINDOW_SIZE, batch_size=BATCH_SIZE
+)
 model = PdMLSTM(input_dim=INPUT_DIM, hidden_dim=HIDDEN_DIM, num_layers=NUM_LAYERS)
 
 # 3. 손실 함수 및 옵티마이저 설정
 # - BCELoss: 최종 출력에 Sigmoid가 있으므로 확률 오차를 계산하기 위해 사용
+# 만약 sigmoid를 사용하지 않고 출력되었다면 BCEWithLogitsLoss() 를 사용해 시그모이드를 적용하여 손실 계산
+#criterion = nn.BCEWithLogitsLoss()
 criterion = nn.BCELoss()
 # - Adam: 가중치를 잘게 쪼개어 최적화하는 메인 엔진
 optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
-print(">>> 학습(Training) 루프 시작!")
+print(">>> 학습(Training) 루프 시작")
+best_val_loss = float('inf')  # 최고 성능(가장 낮은 검증 Loss)을 기록하기 위한 변수
+
+
 # 4. 학습 루프 (잘게 쪼갠 미니배치 단위로 반복 학습)
-model.train()  # 모델을 학습 모드로 전환
 for epoch in range(EPOCHS):
+    # 4.1 Training 
+    model.train()  # 모델을 학습 모드로 전환 (이전엔 학습만을 했지만 이번엔 검증까지 해야하므로, 에포크시작할때마다 모드전환)
     total_loss = 0
     for X_batch, y_batch in train_loader:
         # 1) 이전 스텝에서 쌓인 기울기(Gradient) 초기화
@@ -77,10 +85,29 @@ for epoch in range(EPOCHS):
         
         total_loss += loss.item()
     
-    # 에폭마다 오차가 잘 줄어들고 있는지 중간 점검 출력
-    avg_loss = total_loss / len(train_loader)
-    print(f"Epoch [{epoch+1}/{EPOCHS}] | Average Loss: {avg_loss:.4f}")
+    # Epoch마다 오차가 잘 줄어들고 있는지 중간 점검 출력
+    avg_train_loss = total_loss / len(train_loader)
+
+    # 4.2 validation
+    model.eval()  # 모델을 평가 모드로 전환 (드롭아웃 등 비활성화)
+    val_loss = 0
+    # 검증 시에는 가중치를 업데이트할 필요가 없으므로 gradient 계산을 끄기 (메모리 절약 및 속도 향상)
+    with torch.no_grad():
+        for X_val, y_val in val_loader:
+            val_outputs = model(X_val)
+            v_loss = criterion(val_outputs, y_val)
+            val_loss += v_loss.item()
+            
+    avg_val_loss = val_loss / len(val_loader)
+
+    # 4.3 print result & checkpoint save
+    print(f"Epoch [{epoch+1}/{EPOCHS}] | Train Loss: {avg_train_loss:.4f} | Val Loss: {avg_val_loss:.4f}")
+
+    # 검증 Loss가 이전 기록보다 더 낮아졌다면, 지금 모델이 최고 성적이라는 뜻
+    if avg_val_loss < best_val_loss:
+        best_val_loss = avg_val_loss
+        torch.save(model.state_dict(), "best_model_weights.pth")
+        print(f"[Checkpoint] Validation Loss 개선 최고 가중치 저장 완료 (Val Loss: {avg_val_loss:.4f})")
 
 # 5. 학습 완료된 가중치 저장
-torch.save(model.state_dict(), "model_weights.pth")
-print(">>> 학습 완료! 'model_weights.pth'로 모델 가중치가 저장되었습니다.")
+print(">>> 최종 학습 완료 'model_weights.pth'로 모델 가중치가 저장되었습니다.")
