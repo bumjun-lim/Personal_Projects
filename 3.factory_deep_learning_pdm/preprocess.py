@@ -3,7 +3,7 @@ import pandas as pd
 import torch
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data import DataLoader, Dataset
-
+from imblearn.over_sampling import SMOTE
 
 # PyTorch Dataset 정의
 class PdMDataset(Dataset):
@@ -55,7 +55,7 @@ def get_pdm_dataloader(
     # CSV 데이터 로드 방식
     df = pd.read_csv(file_path)
 
-    # 2. 사용할 센서 특징 및 정답 컬럼 지정
+    # 2. 사용할 센서 특징 및 정답 컬럼 지정 
     feature_cols = [
         "Air temperature [K]",
         "Process temperature [K]",
@@ -80,7 +80,21 @@ def get_pdm_dataloader(
     scaled_val = scaler.transform(df_val[feature_cols])
     scaled_test = scaler.transform(df_test[feature_cols])
 
+#    # 4.1. Train 데이터에만 SMOTE 오버샘플링 적용 
+#    print(f"SMOTE 적용 전 Train 데이터 형태: {scaled_train.shape}, 고장 개수: {sum(df_train[target_col])}")
+#    smote = SMOTE(random_state=42)
+
+#    # train의 피처와 타겟을 합쳐서 리밸런싱 후 다시 분리
+#    scaled_train_resampled, train_target_resampled = smote.fit_resample(
+#        scaled_train, df_train[target_col].values
+#    )
+#    print(f"SMOTE 적용 후 Train 데이터 형태: {scaled_train_resampled.shape}, 고장 개수: {sum(train_target_resampled)}")
+
+# SMOTE기법은, 기존 데이터의 시계열흐름을 깨기 때문에 폐기 처분하도록 결정함
+
     # 5. 각각 슬라이딩 윈도우 적용
+#   X_train, y_train = create_sequences(scaled_train_resampled, train_target_resampled, window_size) #SMOTE기법 적용된 데이터를 학습데이터로 넘기기 
+    
     X_train, y_train = create_sequences(scaled_train, df_train[target_col].values, window_size)
     X_val, y_val = create_sequences(scaled_val, df_val[target_col].values, window_size)
     X_test, y_test = create_sequences(scaled_test, df_test[target_col].values, window_size)
@@ -98,9 +112,11 @@ def get_pdm_dataloader(
     return train_loader, val_loader, test_loader
 
 def main():
-    dataloader = get_pdm_dataloader(file_path="ai4i2020.csv", window_size=10, batch_size=32)
+    train_loader, val_loader, test_loader = get_pdm_dataloader(
+        file_path="ai4i2020.csv", window_size=10, batch_size=32
+    )
     # 테스트 확인
-    for batch_X, batch_y in dataloader:
+    for batch_X, batch_y in train_loader:
         print("로드된 배치 X 형태:", batch_X.shape)
         print("로드된 배치 y 형태:", batch_y.shape)
         break

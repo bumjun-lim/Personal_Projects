@@ -23,8 +23,8 @@ class PdMLSTM(nn.Module):
         # LSTM이 시간 흐름을 압축해서 뱉어낸 마지막 결과물을 받아 최종 확률값(0~1)으로 변환
         self.fc = nn.Linear(hidden_dim, output_dim)
 
-        # 3. 시그모이드 활성화 함수 (0과 1 사이의 확률값으로 압축)
-        self.sigmoid = nn.Sigmoid()
+        # 3. 시그모이드 활성화 함수 (0과 1 사이의 확률값으로 압축) #모델고도화과정에서 시그모이드 제거하기로 결정
+        # self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
         # x 형태: [Batch Size, Window Size, Feature Size] (예: [32, 10, 5])
@@ -40,7 +40,7 @@ class PdMLSTM(nn.Module):
         # Fully Connected 레이어 통과 -> [Batch Size, 1]
         out = self.fc(out)
 
-        # 시그모이드 통과하여 0~1 사이 확률값으로 변환
-        out = self.sigmoid(out)
+        # 시그모이드 통과하여 0~1 사이 확률값으로 변환 #모델고도화과정에서 시그모이드 제거하기로 결정
+        # out = self.sigmoid(out)
 
         return out

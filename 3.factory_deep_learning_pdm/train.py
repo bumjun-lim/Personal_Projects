@@ -28,18 +28,48 @@
 
 # 5. 학습 완료된 모델 가중치 저장
 # - torch.save()를 활용해 학습된 모델의 state_dict를 .pth 파일로 저장
-import torch
+
+# ==========================================
+# [Training Log] 
+# ==========================================
+# 1.모델에 시그모이드 적용 후 criterion = nn.BCELoss() -> 0.00
+# 2.Train 데이터에 SMOTE 적용 후 슬라이딩 윈도우 진행 ➔ 시계열 흐름이 깨져서 여전히 0.00 (이후 SMOTE는 폐기함)
+# 3.SMOTE 폐기 + 모델 시그모이드 제거 + nn.BCEWithLogitsLoss(pos_weight=pos_weight) 적용 ➔ 드디어 수치 출력 시작 (Recall 42%, F1 0.26 달성) 그럼에도 부족
+# 4.윈도우사이즈를 30으로 늘리고, 고장에 대한 패널티 가중치 25 -> recall 0.7857 그러나 정밀도가 바닥을 기고있음
+# 5.윈도우사이즈를 5로 줄이고, 고장에 대한 패널티 가중치 25 -> recall 0.1071 
+# 6.Focal Loss적용해보기  0.000
+# 7.Focal Loss, 윈도우 줄여보기 0.000
+
 import torch.nn as nn
 import torch.optim as optim
+# trial 5
+import torch
+import torch.nn.functional as F
+
 from model import PdMLSTM  # 어제 만든 모델 클래스
 from preprocess import get_pdm_dataloader  # 전처리 및 데이터로더 함수
+# Focal Loss 클래스 정의
+class FocalLoss(nn.Module):
+    def __init__(self, alpha=0.25, gamma=2.0):
+        super(FocalLoss, self).__init__()
+        self.alpha = alpha # 고장 데이터에 주는 가중치 역할
+        self.gamma = gamma # 쉬운 데이터를 얼마나 무시할지 결정 (보통 2.0 사용)
+
+    def forward(self, inputs, targets):
+        # inputs는 시그모이드를 거치지 않은 Logits, targets는 실제 라벨
+        bce_loss = F.binary_cross_entropy_with_logits(inputs, targets, reduction='none')
+        pt = torch.exp(-bce_loss) 
+        focal_loss = self.alpha * (1 - pt) ** self.gamma * bce_loss
+     
+        return torch.mean(focal_loss)
+
 
 # 1. 하이퍼파라미터 설정 (세부 조절 도구들)
 INPUT_DIM = 5
 HIDDEN_DIM = 64
 NUM_LAYERS = 1
 BATCH_SIZE = 32
-WINDOW_SIZE = 10
+WINDOW_SIZE = 5
 LEARNING_RATE = 0.001
 EPOCHS = 50  # 테스트용
 
@@ -54,7 +84,18 @@ model = PdMLSTM(input_dim=INPUT_DIM, hidden_dim=HIDDEN_DIM, num_layers=NUM_LAYER
 # - BCELoss: 최종 출력에 Sigmoid가 있으므로 확률 오차를 계산하기 위해 사용
 # 만약 sigmoid를 사용하지 않고 출력되었다면 BCEWithLogitsLoss() 를 사용해 시그모이드를 적용하여 손실 계산
 #criterion = nn.BCEWithLogitsLoss()
-criterion = nn.BCELoss()
+#criterion = nn.BCELoss()
+
+#모델 고도화 과정에서, 고장에 패널티 가중치를 부과하기로 결정
+
+# 3.1. 고장(1) 데이터에 강력한 패널티 가중치 부여 (예: 25배)
+pos_weight = torch.tensor([25.0])
+
+# 3.2. BCEWithLogitsLoss 사용 (수치 안정성이 뛰어나고 pos_weight 적용 가능)
+#criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
+#trial 5
+criterion = FocalLoss(alpha=0.75, gamma=2.0)
+
 # - Adam: 가중치를 잘게 쪼개어 최적화하는 메인 엔진
 optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
@@ -110,4 +151,4 @@ for epoch in range(EPOCHS):
         print(f"[Checkpoint] Validation Loss 개선 최고 가중치 저장 완료 (Val Loss: {avg_val_loss:.4f})")
 
 # 5. 학습 완료된 가중치 저장
-print(">>> 최종 학습 완료 'model_weights.pth'로 모델 가중치가 저장되었습니다.")
+print(">>> 최종 학습 완료 'best_model_weights.pth'로 모델 가중치가 저장되었습니다.")
