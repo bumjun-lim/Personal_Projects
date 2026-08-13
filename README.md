@@ -10,3 +10,5 @@
   * F1-Score 기반 사기 거래 탐지 모델 및 Streamlit 모니터링 구축
 * **[2. 스마트팩토리 설비 이상 감지 시스템](./2.Predictive_Maintenance)** 
   * 비지도 학습 기반 센서 데이터 이상치 감지 및 대응 파이프라인
+* **[3. 스마트팩토리 예지보전 고도화 프로젝트](./3.factory_deep_learning_pdm)** 
+  * PyTorch의 시계열 딥러닝(LSTM) 모델 기반 설비 고장 예측
