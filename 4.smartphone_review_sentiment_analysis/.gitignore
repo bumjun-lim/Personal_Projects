@@ -1,0 +1,24 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Data files
+*.csv
+*.xlsx
+data/
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Streamlit / IDE Configurations
+.streamlit/secret.toml
+.vscode/
+.idea/
+
+# PyTorch model weight files
+*.pth
+*.pt
