@@ -12,3 +12,5 @@
   * 비지도 학습 기반 센서 데이터 이상치 감지 및 대응 파이프라인
 * **[3. 스마트팩토리 예지보전 고도화 프로젝트](./3.factory_deep_learning_pdm)** 
   * PyTorch의 시계열 딥러닝(LSTM) 모델 기반 설비 고장 예측
+* **[4. 최신 스마트폰 시장 유저 리뷰(2025) 기반 페인 포인트(Pain Point) 발굴 프로젝트](./4.smartphone_review_sentiment_analysis)** 
+  * 텍스트 마이닝 기반 리뷰 감성 분석 및 페인 포인트(Pain Point) 발굴
