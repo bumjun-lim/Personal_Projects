@@ -97,6 +97,7 @@ def main():
     
   print(f">> 2017년 파일 개수: {len(files_2017)}개 발견")
   print(f">> 2025년 파일 개수: {len(files_2025)}개 발견")
+  
     
   if not files_2017 or not files_2025:
     print(">> 경로를 다시 확인해주세요.")
@@ -112,6 +113,24 @@ def main():
   audit_labels(df_17, df_25)
   print(np.shape(df_17))
   print(np.shape(df_25))
+
+
+def apply_attack_group_and_year(df, year_str, label_col_name):
+  """데이터프레임에 Year와 Attack_Group 컬럼을 추가하여 반환하는 함수"""
+  df = df.copy()  # 원본 오염 방지
+  df["Year"] = year_str
+
+  # 레이블 컬럼이 존재하는지 확인 후 상위 그룹 매핑 적용
+  if label_col_name in df.columns:
+    df["Attack_Group"] = df[label_col_name].apply(assign_attack_group)
+  else:
+    print(
+        f"[WARNING] '{label_col_name}' 컬럼을 찾을 수 없습니다. 컬럼명을 확인해주세요."
+    )
+    df["Attack_Group"] = "Unknown"
+
+  return df
+
 
 if __name__ == "__main__":
   main()
