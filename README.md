@@ -14,3 +14,5 @@
   * PyTorch의 시계열 딥러닝(LSTM) 모델 기반 설비 고장 예측
 * **[4. 최신 스마트폰 시장 유저 리뷰(2025) 기반 페인 포인트(Pain Point) 발굴 프로젝트](./4.smartphone_review_sentiment_analysis)** 
   * 텍스트 마이닝 기반 리뷰 감성 분석 및 페인 포인트(Pain Point) 발굴
+* **[5. 네트워크 이상 탐지 및 대응 가이드 대시보드](./5.aiops-network-anomaly-detection)**
+  * CIC-IDS-2017 및 CIC-IIoT-2025 데이터 기반 네트워크 트래픽 이상 탐지 및 실무 대응 방안 시각화 대시보드
