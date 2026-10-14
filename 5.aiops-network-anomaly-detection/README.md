@@ -38,7 +38,7 @@
    * *"완벽한 자동 차단 모델이란 존재하지 않으며, 인프라의 미세한 이탈 징후를 다각도로 추적하고 현업 관리자의 실무 조치를 조율하는 정량적 의사결정 지표가 진짜 분석가의 몫"*이라는 실무적 감각 체득.
 
 ## 🗂️ 프로젝트 구조 (Directory Structure)
-
+```text
 5.aiops-network-anomaly-detection/
 │
 ├── data/                    # 원천 및 가공된 Parquet/CSV 데이터셋
@@ -54,7 +54,7 @@
 ├── app.py                   # Streamlit 진입점 (Landing & Data Loader)
 ├── requirements.txt         # 패키지 의존성 목록
 └── README.md
-
+```
 
 ## 🚀 프로젝트 실행 방법
 
