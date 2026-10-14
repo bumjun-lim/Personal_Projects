@@ -1,5 +1,5 @@
 import pandas as pd
-
+import os
 # 1. 개선된 의미 기반 통합 표준 피처 매핑 딕셔너리
 SEMANTIC_FEATURE_MAP = {
     # --- Volume ---
@@ -112,9 +112,13 @@ def generate_mapping_csv(filename="feature_standard_mapping.csv"):
                     "Standard_Feature_Name": std_name, # 화면 표시용 이름
                     "Risk_Group": category
                 })
-                
+
+    output_dir = "../data/processed_data"
+    os.makedirs(output_dir, exist_ok=True)
+
     df_mapping = pd.DataFrame(rows)
-    df_mapping.to_csv(filename, index=False, encoding="utf-8-sig")
+    output_path = os.path.join(output_dir, filename)
+    df_mapping.to_csv(output_path, index=False, encoding="utf-8-sig")
     print(f"[INFO] '{filename}' 파일 생성 완료! (총 {len(df_mapping)}개 매핑 행)")
     return df_mapping
 

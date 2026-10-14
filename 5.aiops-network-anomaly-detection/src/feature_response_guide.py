@@ -1,5 +1,5 @@
 import pandas as pd
-
+import os
 def generate_full_response_guide_csv(filename="feature_response_guide.csv"):
     response_guide_data = [
         # ==========================================
@@ -225,9 +225,18 @@ def generate_full_response_guide_csv(filename="feature_response_guide.csv"):
             "Response_Guide": "1. QoS(품질 서비스) 정책 적용하여 중요 트래픽 우선 처리\n2. 대역폭 과다 유발 소스 트래픽 쉐이핑(Shaping)"
         }
     ]
+
+        
+    # 저장할 디렉토리 경로 지정
+    output_dir = "../data/processed_data"
+
+    # 폴더가 없다면 안전하게 생성
+    os.makedirs(output_dir, exist_ok=True)
     
     df_guide = pd.DataFrame(response_guide_data)
-    df_guide.to_csv(filename, index=False, encoding="utf-8-sig")
+    output_path = os.path.join(output_dir, filename)
+
+    df_guide.to_csv(output_path, index=False, encoding="utf-8-sig")
     print(f"[INFO] '{filename}' 파일 생성 완료! (총 {len(df_guide)}개 가이드 항목)")
     return df_guide
 

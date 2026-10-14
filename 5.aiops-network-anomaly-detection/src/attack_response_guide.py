@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 
 attack_response_guide_data = [
 
@@ -76,7 +77,15 @@ attack_response_guide_data = [
 
 ]
 
-# DataFrame으로 변환 후 CSV 저장
+# 저장할 디렉토리 경로 지정
+output_dir = "../data/processed_data"
+
+# 폴더가 없다면 안전하게 생성
+os.makedirs(output_dir, exist_ok=True)
+
+# DataFrame으로 변환 후 지정된 경로에 CSV 저장
 df_attack_guide = pd.DataFrame(attack_response_guide_data)
-df_attack_guide.to_csv("attack_response_guide.csv", index=False, encoding="utf-8-sig")
-print("attack_response_guide.csv 파일이 성공적으로 생성되었습니다!")
+output_path = os.path.join(output_dir, "attack_response_guide.csv")
+
+df_attack_guide.to_csv(output_path, index=False, encoding="utf-8-sig")
+print(f"{output_path} 파일이 성공적으로 생성되었습니다!")
