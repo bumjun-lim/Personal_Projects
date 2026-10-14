@@ -6,7 +6,13 @@ __pycache__/
 # Data files
 *.csv
 *.xlsx
+*.parquet
+*.sha256
 data/
+!data/
+!data/raw_data/
+!data/raw_data/**/README.md
+!data/raw_data/**/.gitkeep
 
 # Environments
 .venv/

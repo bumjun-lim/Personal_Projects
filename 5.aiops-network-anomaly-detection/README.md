@@ -62,10 +62,27 @@
 ```bash
 pip install -r requirements.txt
 ```
-
-### 2. Streamlit 대시보드 실행
-#### 프로젝트 루트 디렉토리에서 아래 명령어를 실행하여 웹 대시보드를 구동합니다.
-
-```bash
-streamlit run app.py
-```
+### 2. 데이터 다운로드 및 구동방법 *중요!!!*
+1. **데이터 다운로드 링크**: [데이터셋1](https://www.kaggle.com/datasets/chethuhn/network-intrusion-dataset) , [데이터셋2](https://www.kaggle.com/datasets/baderbotaiban/cic-iiot-2025-datasense-csv-mirror)
+2. 위 링크에서 데이터를 다운로드합니다.
+3. 압축을 해제한 뒤, 위 data/raw_data 디렉토리에 맞추어 CSV 파일들을 위치시켜 줍니다. 상세 내용은 데이터 리드미를 참조해주세요.
+4. 데이터 배치가 완료되면 `src/` 디렉토리로 이동하여 전처리 스크립트를 실행해 파케(Parquet) 파일로 변환합니다.
+   ```bash
+   cd src
+   python data_process.py
+   ```
+5. 이후, 데이터 변환을 진행해줍니다.
+   ```bash
+   python data_process.py
+   ```
+6. 마지막으로 스트림릿 구동에 필요한 4가지 파일을 만들기 위한 스크립트들을 실행해주시고, 프로젝트 폴더(상위폴더) 로 이동해주세요
+   ```bash
+   python union_data_analyzing.py
+   python attack_response_guide.py
+   python feature_mapping_utils.py
+   python feature_response_guide.py
+   ```
+7. 이후 스트림릿 구동을 진행 할 수 있습니다.
+   ```bash
+   streamlit run app.py
+   ```
