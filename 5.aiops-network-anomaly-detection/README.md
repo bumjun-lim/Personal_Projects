@@ -71,18 +71,14 @@ pip install -r requirements.txt
    cd src
    python data_process.py
    ```
-5. 이후, 데이터 변환을 진행해줍니다.
-   ```bash
-   python data_process.py
-   ```
-6. 마지막으로 스트림릿 구동에 필요한 4가지 파일을 만들기 위한 스크립트들을 실행해주시고, 프로젝트 폴더(상위폴더) 로 이동해주세요
+5. 마지막으로 스트림릿 구동에 필요한 4가지 파일을 만들기 위한 스크립트들을 실행해주시고, 프로젝트 폴더(상위폴더) 로 이동해주세요
    ```bash
    python union_data_analyzing.py
    python attack_response_guide.py
    python feature_mapping_utils.py
    python feature_response_guide.py
    ```
-7. 이후 스트림릿 구동을 진행 할 수 있습니다.
+6. 이후 스트림릿 구동을 진행 할 수 있습니다.
    ```bash
    streamlit run app.py
    ```
